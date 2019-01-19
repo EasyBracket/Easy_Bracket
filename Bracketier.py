@@ -51,12 +51,22 @@ def start_tournament():
     challonge.tournaments.start(tournament["id"])
     return statement("Tournament Start", "The tournaments has started")
 
+
+# usedul builder stuff
+
 def statement(title, body):
     speechlet = {}
     speechlet['outputSpeech'] = build_PlainSpeech(body)
     speechlet['card'] = build_SimpleCard(title, body)
     speechlet['shouldEndSession'] = True
     return build_response(speechlet)
+
+def conversation(title, body, session_attrs):
+    speechlet = {}
+    speechlet['outputSpeech'] = build_PlainSpeech(body)
+    speechlet{'card'] = build_SimpleCard(title, body)
+    speechlet['shouldEndSession'] = False
+    return build_response(speechlet, session_attributes = session_attrs)
 
 def build_PlainSpeech(body):
     speech = {}
