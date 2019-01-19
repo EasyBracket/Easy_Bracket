@@ -1,0 +1,200 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "easy bracket",
+            "intents": [
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "StartTournament",
+                    "slots": [],
+                    "samples": [
+                        "start tournament",
+                        "launch a tournament",
+                        "launch the tournament",
+                        "start a tournament",
+                        "begin a tournament",
+                        "begin the tournament",
+                        "start the tournament"
+                    ]
+                },
+                {
+                    "name": "CurrentMatches",
+                    "slots": [],
+                    "samples": [
+                        "what matches are happening",
+                        "what matches are ongoing",
+                        "what are the current matches"
+                    ]
+                },
+                {
+                    "name": "StartMatch",
+                    "slots": [
+                        {
+                            "name": "Number",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "begin match {Number}",
+                        "start match {Number}"
+                    ]
+                },
+                {
+                    "name": "EndMatch",
+                    "slots": [
+                        {
+                            "name": "Number",
+                            "type": "AMAZON.NUMBER",
+                            "samples": [
+                                "match number {Number}",
+                                "match {Number}",
+                                "{Number}"
+                            ]
+                        },
+                        {
+                            "name": "player",
+                            "type": "AMAZON.Person",
+                            "samples": [
+                                "{player}"
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "end match number {Number} {player} won",
+                        "end match {Number}",
+                        "end match number {Number}",
+                        "end match {Number} {player} won"
+                    ]
+                },
+                {
+                    "name": "NextMatch",
+                    "slots": [],
+                    "samples": [
+                        "next match",
+                        "what is the next match"
+                    ]
+                },
+                {
+                    "name": "NumberOfParticipants",
+                    "slots": [],
+                    "samples": [
+                        "how many participants are there",
+                        "how many particpants are in the tournament",
+                        "how many particpants there are"
+                    ]
+                },
+                {
+                    "name": "ResetTournament",
+                    "slots": [],
+                    "samples": [
+                        "clear the results",
+                        "clear results",
+                        "clear result",
+                        "reset tournament",
+                        "reset the tournament",
+                        "reset scores"
+                    ]
+                },
+                {
+                    "name": "ParticipantRank",
+                    "slots": [
+                        {
+                            "name": "player",
+                            "type": "AMAZON.Person"
+                        }
+                    ],
+                    "samples": [
+                        "what place is {player} in",
+                        "what place is {player}",
+                        "what rank is {player}"
+                    ]
+                },
+                {
+                    "name": "StartNextMatch",
+                    "slots": [],
+                    "samples": [
+                        "start the next match"
+                    ]
+                }
+            ],
+            "types": []
+        },
+        "dialog": {
+            "intents": [
+                {
+                    "name": "EndMatch",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "Number",
+                            "type": "AMAZON.NUMBER",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.21134805074.364337783512"
+                            }
+                        },
+                        {
+                            "name": "player",
+                            "type": "AMAZON.Person",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.21134805074.382901765752"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "delegationStrategy": "ALWAYS"
+        },
+        "prompts": [
+            {
+                "id": "Elicit.Slot.21134805074.382901765752",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "Who won the match?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.21134805074.364337783512",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "Which mach finished?"
+                    },
+                    {
+                        "type": "PlainText",
+                        "value": "Which match was this?"
+                    },
+                    {
+                        "type": "PlainText",
+                        "value": "What match number was this?"
+                    }
+                ]
+            }
+        ]
+    }
+}
