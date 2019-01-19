@@ -40,7 +40,7 @@ def next_match():
             break
     player1 = get_participant(current_match['player1_id'])
     player2 = get_participant(current_match['player2_id'])
-    string = ("The next match is number " + str(self.match_index+1) + " with " + player1 + " and " + player2)
+    string = ("The next match is between " + player1 + " and " + player2)
     return string
 
 #combines the information into an actual response
