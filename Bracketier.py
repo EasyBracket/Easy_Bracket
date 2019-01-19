@@ -19,11 +19,11 @@ def start_tournament():
     challonge.tournaments.start(tournament["id"])
     return "The tournament has started"
 
-def get_num_participants(self):
+def get_num_participants():
     global participants
     return len(participants)
 
-def get_participant(self, id):
+def get_participant(id):
     global participants
     for p in (participants):
         if p['id'] == id:
