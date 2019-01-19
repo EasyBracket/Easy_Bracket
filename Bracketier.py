@@ -17,7 +17,7 @@ matches = challonge.matches.index(tournament["id"])
 def start_tournament():
     global tournament
     challonge.tournaments.start(tournament["id"])
-    return statement("Tournament Started","The tournament has started",)
+    return statement("Tournament Started","The tournament has started")
 
 def get_num_participants():
     global participants
@@ -43,6 +43,10 @@ def next_match():
     player1 = get_participant(current_match['player1_id'])
     player2 = get_participant(current_match['player2_id'])
     return statement("Next Match",("The next match is match " + str(count) + " between " + player1 + " and " + player2))
+def reset_tournament():
+    global tournament
+    challonge.tournaments.reset(tournament['id'])
+    return statement("Tournament Reset","The tournament has been reset")
 
 #combines the information into an actual response
 
@@ -76,8 +80,12 @@ def intent_router(event, context):
     
     if intent == "NextMatch":
         return next_match()
+
     if intent == "NumberOfParticipants":
         return get_num_participants()
+
+    if intent == "ResetTournament":
+        return reset_tournament()
 
 #Built in Intents Functions
 #-------------------------------------------------------
