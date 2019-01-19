@@ -1,12 +1,41 @@
 #TODO
-# - properly implement the built in intents
-
+    # - properly implement the built in intents
 import json
 import challonge
+    
+class Bracketier:
+    def __init__(self, user = "haydunce", key = "yCYu1uKVX10iNrRh5vJfy48ReZC2iQ0Kchi4xzMs"):
+        challonge.set_credentials(user,key)
+        self.tournament = challonge.tournaments.show("HackAZ")
+        self.participants = challonge.participants.index(self.tournament["id"])
+        self.matches = challonge.matches.index(self.tournament["id"])
+        self.match_index = -1
 
-challonge.set_credentials("haydunce","yCYu1uKVX10iNrRh5vJfy48ReZC2iQ0Kchi4xzMs")
+    #Custom Intents Functions
+    #-------------------------------------------------------
+    def start_tournament(self):
+        challonge.tournaments.start(self.tournament["id"])
+        return "The tournament has started"
+    
+    def get_num_participants(self):
+        return len(self.participants)
 
-tournament = challonge.tournaments.show("HackAZ")
+    def get_participant(self, id):
+        for p in (self.participants):
+            if p['id'] == id:
+                return p['name']
+        return null
+    def next_match(self):
+        self.match_index+=1
+        current_match = self.matches[self.match_index]
+        player1 = self.get_participant(current_match['player1_id'])
+        player2 = self.get_participant(current_match['player2_id'])
+        string = ("The next match is number " + str(self.match_index+1) + " with " + player1 + " and " + player2)
+        return string
+
+#combines the information into an actual response
+
+global bracketier = Bracketier()
 
 def lambda_handler(event, context):
     if event['request']['type'] == "LaunchRequest":
@@ -34,7 +63,7 @@ def intent_router(event, context):
     #custom intents
 
     if intent == "StartTournament":
-        return start_tournament()
+        return bracketier.start_tournament()
 
 #Built in Intents Functions
 #-------------------------------------------------------
@@ -44,13 +73,6 @@ def help_intent():
     return statement("help","You want help")
 def stop_intent():
     return statement("stop","You want to stop")
-
-#Custom Intents Functions
-#-------------------------------------------------------
-def start_tournament():
-    challonge.tournaments.start(tournament["id"])
-    return statement("Tournament Start", "The tournaments has started")
-
 
 # usedul builder stuff
 
