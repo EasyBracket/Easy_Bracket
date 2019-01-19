@@ -21,7 +21,7 @@ def start_tournament():
 
 def get_num_participants():
     global participants
-    return len(participants)
+    return statement("Number of Participants","There are " + str(len(participants)) + " participants")
 
 def get_participant(id):
     global participants
@@ -34,14 +34,15 @@ def next_match():
     global matches
     global participants
     current_match = 0
+    count = 1
     for m in matches:
         if(m['state'] == "open"):
             current_match = m
             break
+        count+=1
     player1 = get_participant(current_match['player1_id'])
     player2 = get_participant(current_match['player2_id'])
-    string = ("The next match is between " + player1 + " and " + player2)
-    return string
+    return statement("Next Match",("The next match is match " + str(count) + " between " + player1 + " and " + player2))
 
 #combines the information into an actual response
 
@@ -72,6 +73,11 @@ def intent_router(event, context):
 
     if intent == "StartTournament":
         return start_tournament()
+    
+    if intent == "NextMatch":
+        return next_match()
+    if intent == "NumberOfParticipants":
+        return get_num_participants()
 
 #Built in Intents Functions
 #-------------------------------------------------------
@@ -116,3 +122,4 @@ def build_SimpleCard(title, body):
     card['type'] = 'Simple'
     card['title'] = title
     card['content'] = body
+
