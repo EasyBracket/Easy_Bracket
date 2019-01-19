@@ -1,5 +1,5 @@
 #TODO
-    # - properly implement the built in intents
+# - properly implement the built in intents
 import json
 import challonge
 
@@ -17,7 +17,7 @@ matches = challonge.matches.index(tournament["id"])
 def start_tournament():
     global tournament
     challonge.tournaments.start(tournament["id"])
-    return "The tournament has started"
+    return statement("Tournament Started","The tournament has started",)
 
 def get_num_participants():
     global participants
@@ -34,8 +34,8 @@ def next_match():
     global matches
     global participants
     current_match = 0
-    for m in matches
-        if(m['state'] == "open")
+    for m in matches:
+        if(m['state'] == "open"):
             current_match = m
             break
     player1 = get_participant(current_match['player1_id'])
@@ -110,7 +110,6 @@ def build_response(message, session_attributes={}):
     response['sessionAttributes'] = session_attributes
     response['response'] = message
     return response
-
 
 def build_SimpleCard(title, body):
     card = {}
