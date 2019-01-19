@@ -35,7 +35,7 @@ class Bracketier:
 
 #combines the information into an actual response
 
-global bracketier = Bracketier()
+bracketier = Bracketier()
 
 def lambda_handler(event, context):
     if event['request']['type'] == "LaunchRequest":
@@ -63,6 +63,7 @@ def intent_router(event, context):
     #custom intents
 
     if intent == "StartTournament":
+        global bracketier
         return bracketier.start_tournament()
 
 #Built in Intents Functions
@@ -86,7 +87,7 @@ def statement(title, body):
 def conversation(title, body, session_attrs):
     speechlet = {}
     speechlet['outputSpeech'] = build_PlainSpeech(body)
-    speechlet{'card'] = build_SimpleCard(title, body)
+    speechlet['card'] = build_SimpleCard(title, body)
     speechlet['shouldEndSession'] = False
     return build_response(speechlet, session_attributes = session_attrs)
 
@@ -109,4 +110,3 @@ def build_SimpleCard(title, body):
     card['type'] = 'Simple'
     card['title'] = title
     card['content'] = body
-    return card
