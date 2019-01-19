@@ -39,11 +39,27 @@ def stop_intent():
 
 #Custom Intents Functions
 #-------------------------------------------------------
+def on_launch(event, context):
+    return statement("Bracket Status", "")
+
 def start_tournament():
     challonge.tournaments.start(tournament["id"])
     return message("Tournament Start", "The tournaments has started")
 
-#helper method, builds a card
+def statement(title, body):
+    speechlet = {}
+    speechlet['outputSpeech'] = build _PlainSpeech(body)
+    speechlet['card'] = build_SimpleCard(title, body)
+    speechlet['shouldEndSession'] = True
+    return build_response(speechlet)
+
+#helper method, creates a dictionary 
+def build_PlainSpeech(body):
+    speech = {}
+    speech['type'] = 'PlainText'
+    speech['text'] = body
+    return speech
+
 def build_SimpleCard(title, body):
     card = {}
     card['type'] = 'Simple'
@@ -51,7 +67,6 @@ def build_SimpleCard(title, body):
     card['text'] = body
     return card
 
-#combines the information into an actual response
 def build_response(message, session_attributes={}):
     response = {}
     response['version'] = '1.0'
