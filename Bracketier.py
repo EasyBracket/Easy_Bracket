@@ -3,6 +3,10 @@
 
 import challonge
 
+challonge.set_credentials("haydunce","yCYu1uKVX10iNrRh5vJfy48ReZC2iQ0Kchi4xzMs")
+
+tournament = challonge.tournaments.show("HackAZ")
+
 def intent_router(event, context):
     intent = event['request']['intent']['name']
     #required intents 
@@ -19,6 +23,9 @@ def intent_router(event, context):
     if intent == "NextMatch":
         return next_match()
 
+    if intent == "StartTournmaent":
+        return start_tournament()
+
 #Built in Intents Functions
 #-------------------------------------------------------
 def cancel_intent():
@@ -32,12 +39,9 @@ def stop_intent():
 
 #Custom Intents Functions
 #-------------------------------------------------------
-def next_match(event, context):
-    #code to access the Challonge API here
-    return message("Next Match","The next match is number"+nextMatchNum)
-
-def ongoing_matches(event, context):
-    #code to access the Challonge API here
+def start_tournament():
+    challonge.tournaments.start(tournament["id"])
+    return message("Tournament Start", "The tournaments has started")
 
 #helper method, builds a card
 def build_SimpleCard(title, body):
