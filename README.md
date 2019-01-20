@@ -9,3 +9,5 @@ Initial concept decided upon, we planned to use Java or Javascript as the backen
 
 Next we were able to implement stage one which was just starting the tournament using Alexa. Stage two was rolling out necessary features that allowed for administration of the bracket using Alexa such as starting matches, reporting matches, and finalizing the tournament. We ran into an issue where pichal, the package we were using to run our API, was unable to perform scorekeeping actions on the bracket. This forced us to begin from scratch with a new package, achallonge. This package was written utilizing async functions which led to difficulty with gathering output. After *hours* of work trying to resolve this issue, including substantial assistance from mentors, and even contacting the author of the package himself, we finally found that the package was dependent on a deprecated version of another package. This was resolved by using a version of the dependency from two years ago. This resolved we were back on track but,
 
+## External Links
+- [Challonge Bracket](https://challonge.com/HackAZ/participants)
