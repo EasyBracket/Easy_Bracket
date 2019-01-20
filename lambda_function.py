@@ -73,7 +73,7 @@ async def intent_router(event, context):
         global names
         winner = event['request']['intent']['slots']['player']['value']
         
-        if winner is in names:
+        if winner in names:
             participant = await tournament.get_participant(await get_id_from_participant(winner))
             match = participant.get_next_match()
             await update_match(match.id, participant.id)
