@@ -11,3 +11,4 @@ Next we were able to implement stage one which was just starting the tournament 
 
 ## External Links
 - [Challonge Bracket](https://challonge.com/HackAZ/participants)
+- [Alexa Simulator](https://echosim.io/welcome)
