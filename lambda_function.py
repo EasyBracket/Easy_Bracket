@@ -19,12 +19,12 @@ async def login(tournament_name = "HackAZ"):
     KEY = "yCYu1uKVX10iNrRh5vJfy48ReZC2iQ0Kchi4xzMs"
 
     user = await challonge.get_user(USER, KEY)
-    tournament = await user.get_tournament(url = tournament_name)
-    participants = await tournament.get_participants()
-    matches = await tournament.get_matches()
+    tournament = await user.get_tournament(url = tournament_name, force_update=True)
+    participants = await tournament.get_participants(force_update=True)
+    matches = await tournament.get_matches(force_update=True)
     
     for p in participants:
-        names.append(p.name)
+        names.append(p.name.lower())
 
 def lambda_handler(event, context):
     loop = asyncio.get_event_loop()
@@ -32,6 +32,9 @@ def lambda_handler(event, context):
     
 async def handler(loop, event, context):
     await login()
+    global tournament
+    print("Tourney state " + tournament.state)
+    print(tournament.started_checking_in_at)
     
     if event['request']['type'] == "LaunchRequest":
         return await on_launch(event, context)
@@ -69,13 +72,15 @@ async def intent_router(event, context):
     if intent == "ResetTournament":
         return await reset_tournament()
     
+    if intent == "RuleSets":
+        return statement("rules","The current rules are as follows. Three stocks, Eight minute timer, no items and hazards off.")
+    
     if intent == "EndMatch":
         global names
         winner = event['request']['intent']['slots']['player']['value']
-        
-        if winner in names:
-            participant_id = await get_id_from_participant(winner))
-            match = get_next_match_from_participant_id(participant_id)
+        if winner.lower() in names:
+            participant_id = await get_id_from_participant(winner)
+            match = await get_next_match_from_participant_id(participant_id)
             await update_match(match.id, participant_id)
             return statement("tWin Statement", "Okay, so " + winner + " is now a winner")
         else:
@@ -87,6 +92,7 @@ async def intent_router(event, context):
 async def start_tournament():
     global tournament
     await tournament.start()
+    await tournament.abort_check_in()
     return statement("Tournament Started","The tournament has started")
 
 async def reset_tournament():
@@ -111,8 +117,8 @@ async def get_next_open_match():
 async def next_open_match():
     current_match = await get_next_open_match()
 
-    part1 = await tournament.get_participant(current_match.player1_id)
-    part2 = await tournament.get_participant(current_match.player2_id)
+    part1 = await tournament.get_participant(current_match.player1_id, force_update=True)
+    part2 = await tournament.get_participant(current_match.player2_id, force_update=True)
     player1 = part1.name
     player2 = part2.name
 
@@ -121,61 +127,40 @@ async def next_open_match():
 async def get_next_match_from_participant_id(participant_id):
     global matches
     for m in matches:
-        if m.player1_id == participant_id || m.player2_id == participant_id:
-            return m
+        if (m.player1_id == participant_id or m.player2_id == participant_id):
+            if m.state == 'open':
+                return m
     return None
 
 #attempts to set the completed score/outcome
 async def update_match(match_id, winner_id, scores = "0-0"):
     global tournament
-    winner = await tournament.get_participant(winner_id)
-    match = await tournament.get_match(match_id)
-    await match.report_winner(winner, scores)
+    winner = await tournament.get_participant(winner_id, force_update=True)
+    match = await tournament.get_match(match_id, force_update=True)
+    if match.state == 'open':
+        await match.report_winner(winner, scores)
     
     return None
 
 #sends an email alert to the tournament organizer
 def send_alert():
-    # Replace sender@example.com with your "From" address.
-    # This address must be verified with Amazon SES.
-    SENDER = "haydn nitzsche <hnitzsch@asu.edu>"
-
-    # Replace recipient@example.com with a "To" address. If your account 
-    # is still in the sandbox, this address must be verified.
+    SENDER = "Easy Bracket <easy.bracket@gmail.com>"
     RECIPIENT = "haydnnitzsche@gmail.com"
-
-    # Specify a configuration set. If you do not want to use a configuration
-    # set, comment the following variable, and the 
-    # ConfigurationSetName=CONFIGURATION_SET argument below.
-    #CONFIGURATION_SET = "ConfigSet"
-    
-    # If necessary, replace us-west-2 with the AWS Region you're using for Amazon SES.
     AWS_REGION = "us-east-1"
-    
-    # The subject line for the email.
     SUBJECT = "Potential Issue on Tournament Floor"
-    
-    # The email body for recipients with non-HTML email clients.
-    BODY_TEXT = ("There is an issue being reported on the floor."
-                )
+    BODY_TEXT = ("somehting on the tournament floor requires your attention.")
                 
     # The HTML body of the email.
     BODY_HTML = """<html>
     <head></head>
     <body>
     <h1>easy bracket notification</h1>
-    <p>There is an issue being reported on the floor.</p>
+    <p>somehting on the tournament floor requires your attention.</p>
     </body>
     </html>
                 """            
-    
-    # The character encoding for the email.
     CHARSET = "UTF-8"
-    
-    # Create a new SES resource and specify a region.
     client = boto3.client('ses',region_name=AWS_REGION)
-    
-    # Try to send the email.
     try:
         #Provide the contents of the email.
         response = client.send_email(
@@ -209,9 +194,6 @@ def send_alert():
         print(e.response['Error']['Message'])
     else:
         return statement("report sent","your report has been sent")
-
-def rules():
-    return statement("rules","The current rules are as follows: 3 stocks, 8 minute timer, no items and hazards off.")
 
 #Helpers
 #--------------------------------------------------
