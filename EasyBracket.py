@@ -15,9 +15,9 @@ async def login(tournament_name = "HackAZ"):
     KEY = "yCYu1uKVX10iNrRh5vJfy48ReZC2iQ0Kchi4xzMs"
 
     user = await challonge.get_user(USER, KEY)
-    tournaments = await user.get_tournaments()
-    participants = await tournaments[0].get_participants()
-    matches = await tournaments[0].get_matches()
+    tournament = await user.get_tournament(url = tournament_name)
+    participants = await tournament.get_participants()
+    matches = await tournament.get_matches()
 
 
 
@@ -33,61 +33,52 @@ async def reset_tournament():
     await tournament.reset()
     return statement("Tournament Reset","The tournament has been reset")
 
-def get_num_participants():
-    print('up here')
+async def get_num_participants():
     global participants
-    print('here')
     return statement("Number of Participants","There are " + str(len(participants)) + " participants")
 
 #returns null if not found
 async def get_id_from_participant(name):
-    print('here')
     global participants
-    print(participants)
     for p in (participants):
-        if p['name'] == name:
-            return p['id']
+        print(p.name)
+        if p.name == name:
+            return p.id
     return None
 
-#returns the current match of specified type
-async def get_match_from_state(match_type= "open"):
-    global matches
-    for m in matches:
-        if(m['state'] == match_type):
-            return m  #returns id (integer) of the match
+async def get_next_match():
+    global tournament
+    current_match = None
 
-def match_id_to_match(match_id):
-    global matches
     for m in matches:
-        if(m['id'] == match_id):
-            return m  #returns match
-
-def next_open_match():
-    global matches
-    global participants
-    current_match = 0
-    count = 1
-    for m in matches:
-        if(m['state'] == "open"):
+        if(m.state == "open"):
             current_match = m
-            break
-        count+=1
-    player1 = get_participant(current_match['player1_id'])
-    player2 = get_participant(current_match['player2_id'])
-    return statement("Next Match",("The next match is match " + str(count) + " between " + player1 + " and " + player2))
+
+    return current_match
+
+async def next_open_match():
+    current_match = await get_next_match()
+
+    player1 = await tournament.get_participant(current_match.player1_id)
+    player2 = await tournament.get_participant(current_match.player2_id)
+
+    return statement("Next Match",("The next match is between " + player1 + " and " + player2))
 
 #attempts to set the completed score/outcome
-def update_match(match_id, winner_id, scores = ""):
-    global matches
-    winner = get_participant_from_id(winner_id)
-    challonge.Match(match_id).report_winner(winner, scores)
-
-    return matches
+async def update_match(match_id, winner_id, scores = ""):
+    global tournament
+    winner = await tournament.get_participant(winner_id)
+    match = await tournament.get_match(match_id)
+    await match.report_winner(winner, scores)
+    
+    return None
     
 
 #combines the information into an actual response
 
-def lambda_handler(event, context):
+async def lambda_handler(event, context):
+    await login()
+
     if event['request']['type'] == "LaunchRequest":
         return on_launch(event, context)
 
@@ -97,7 +88,7 @@ def lambda_handler(event, context):
 def on_launch(event, context):
     return statement("Bracketier","something works")
 
-def intent_router(event, context):
+async def intent_router(event, context):
     intent = event['request']['intent']['name']
     
     #required intents 
@@ -113,16 +104,16 @@ def intent_router(event, context):
     #custom intents
 
     if intent == "StartTournament":
-        return start_tournament()
+        return await start_tournament()
     
     if intent == "NextMatch":
-        return next_open_match()
+        return await next_open_match()
 
     if intent == "NumberOfParticipants":
-        return get_num_participants()
+        return await get_num_participants()
 
     if intent == "ResetTournament":
-        return reset_tournament()
+        return await reset_tournament()
 
 #Built in Intents Functions
 #-------------------------------------------------------
@@ -174,19 +165,19 @@ def get_matches():
     return matches
 
 async def main(loop):
-    
+    global tournament
     await login()
-    #yield from reset_tournament()
-    #yield from start_tournament()
     p = await get_id_from_participant('Jose')
     print(p)
-    #print(get_matches())
-    #print("============================================")
-    #match1 = get_match_from_state()
-    #print(update_match(match1['id'], match1['player1_id'], "1-2,3-6"))
-    #print("============================================")
-    #match2 = get_match_from_state()
-    #print(update_match(match2['id'], match2['player1_id'], "3-1, 7-3"))
+    print('=====================================================')
+    print(get_matches())
+    print("=====================================================")
+    match1 = await get_next_match()
+    print(await update_match(match1.id, match1.player1_id, "1-2,3-6"))
+    print("=====================================================")
+    match2 = await get_next_match()
+    print(await update_match(match2.id, match2.player1_id, "3-1, 7-3"))
+
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(loop))

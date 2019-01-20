@@ -6,3 +6,6 @@ Initial concept decided upon, planned to use Java or Javascript as the backend, 
 
 ## 1/19/2019
 We watched some tutorials and read through documentation. Learned how to upload libraries to the Lambda function and make the Challonge library accesible. We were finally able to implement stage one which was just starting the tournament using Alexa.
+
+## 1/19/2019
+Bracketier.py has become deprecated. Replaced with an asynchronous version in EasyBracket.py
