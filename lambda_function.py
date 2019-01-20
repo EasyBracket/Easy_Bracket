@@ -2,7 +2,6 @@ import json
 import challonge
 import asyncio
 
-user = None
 tournament = None
 participants = []
 matches = None
@@ -15,7 +14,6 @@ async def login(tournament_name = "HackAZ"):
     global participants
     global matches
     global names
-    global user
 
     USER = "haydunce" 
     KEY = "yCYu1uKVX10iNrRh5vJfy48ReZC2iQ0Kchi4xzMs"
@@ -34,7 +32,6 @@ def lambda_handler(event, context):
     
 async def handler(loop, event, context):
     await login()
-
     global tournament
     print("Tourney state " + tournament.state)
     print(tournament.started_checking_in_at)
@@ -63,10 +60,6 @@ async def intent_router(event, context):
 
     #custom intents
 
-    if intent == "CreateTournament":
-        t_name = event['request']['intent']['slots']['player']['value']
-        return await create_tournament(t_name)
-
     if intent == "StartTournament":
         return await start_tournament()
     
@@ -89,19 +82,13 @@ async def intent_router(event, context):
             participant_id = await get_id_from_participant(winner)
             match = await get_next_match_from_participant_id(participant_id)
             await update_match(match.id, participant_id)
-            return statement("tWin Statement", "Okay, " + winner + " is now a winner")
+            return statement("tWin Statement", "Okay, so " + winner + " is now a winner")
         else:
             return statement("Not in Tourney", "That person is not in the tournament")
         
 
 #Custom Intents Functions
 #--------------------------------------------------
-async def create_tournament(t_name):
-    global tournament_name 
-    global user
-    await user.create_tournament(t_name, t_name, tournament_type = 'double elimination')
-    return statement("Tournament Created","Created tournament under the name " + t_name)
-
 async def start_tournament():
     global tournament
     await tournament.start()
@@ -112,12 +99,6 @@ async def reset_tournament():
     global tournament
     await tournament.reset()
     return statement("Tournament Reset","The tournament has been reset")
-
-async def terminate_tournament():
-    global tournament
-    global user
-    await user.destroy_tournament(tournament)
-    return statement("Tournament Cancelled", "The tournament has been cancelled")
 
 async def get_num_participants():
     global participants
@@ -173,8 +154,8 @@ def send_alert():
     BODY_HTML = """<html>
     <head></head>
     <body>
-    <h1>Easy Bracket Notification</h1>
-    <p>Somehting on the tournament floor requires your attention.</p>
+    <h1>easy bracket notification</h1>
+    <p>somehting on the tournament floor requires your attention.</p>
     </body>
     </html>
                 """            
@@ -268,6 +249,7 @@ def build_SimpleCard(title, body):
     card['type'] = 'Simple'
     card['title'] = title
     card['content'] = body
+    return card
 
 #Methods for testing
 def get_matches():
