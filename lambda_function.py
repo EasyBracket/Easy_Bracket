@@ -74,10 +74,10 @@ async def intent_router(event, context):
         winner = event['request']['intent']['slots']['player']['value']
         
         if winner in names:
-            participant = await tournament.get_participant(await get_id_from_participant(winner))
-            match = participant.get_next_match()
-            await update_match(match.id, participant.id)
-            return statement("this is dumb", "Okay, so " + winner + " is a winner")
+            participant_id = await get_id_from_participant(winner))
+            match = get_next_match_from_participant_id(participant_id)
+            await update_match(match.id, participant_id)
+            return statement("tWin Statement", "Okay, so " + winner + " is now a winner")
         else:
             return statement("Not in Tourney", "That person is not in the tournament")
         
@@ -98,7 +98,7 @@ async def get_num_participants():
     global participants
     return statement("Number of Participants","There are " + str(len(participants)) + " participants")
 
-async def get_next_match():
+async def get_next_open_match():
     global tournament
     current_match = None
 
@@ -109,7 +109,7 @@ async def get_next_match():
     return current_match
 
 async def next_open_match():
-    current_match = await get_next_match()
+    current_match = await get_next_open_match()
 
     part1 = await tournament.get_participant(current_match.player1_id)
     part2 = await tournament.get_participant(current_match.player2_id)
@@ -117,6 +117,13 @@ async def next_open_match():
     player2 = part2.name
 
     return statement("Next Match",("The next match is between " + player1 + " and " + player2))
+    
+async def get_next_match_from_participant_id(participant_id):
+    global matches
+    for m in matches:
+        if m.player1_id == participant_id || m.player2_id == participant_id:
+            return m
+    return None
 
 #attempts to set the completed score/outcome
 async def update_match(match_id, winner_id, scores = "0-0"):
