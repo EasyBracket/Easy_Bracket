@@ -31,7 +31,7 @@ To add the code that runs the API requests, follow the instructions in [this art
 Should everything be done correctly, you should be able to run the skill in the test window of the Alexa Developers Console.
 
 ## External Links
-- [Demo Challonge Bracket](https://challonge.com/HackAZ/participants)
+- [Demo Challonge Bracket](https://challonge.com/HackAZ)
 - [Alexa Simulator](https://echosim.io/welcome)
-- [Alexa Developer Console]()
+- [Alexa Developer Console](https://developer.amazon.com/alexa/console/ask)
 - [AWS Console](https://console.aws.amazon.com/console/home)
