@@ -1,7 +1,7 @@
 <p align="center"><img src ="https://github.com/HaydnNitzsche/Easy_Bracket/blob/master/logos/EasyBracketSmall.png?raw=true" /></p>
 
 # Easy Bracket
-Run Challonge brackets with Alexa. Created by @HaydnNitzsche, @Jmarkaba, and @JoseTeuttli for HackArziona2019. Works in Python 3.6.
+Run Challonge brackets with Alexa. Created by @HaydnNitzsche, @Jmarkaba, and @JoseTeuttli for HackArziona 2019. Works in Python 3.6.
 
 ## Project Inspiration
 The members of our group are smash-aholics. We can't get enough of the game. Haydn runs tournaments at his house, Jose will regularly drive out to events, and Jah plays as much as possible with his friends. One thing we realized from our experience is that running a tournament can be hectic. Setting up rulesets, ensuring correct reporting of results, and trying to be in 100 places at once takes its toll on an individual. Luckily, with Easy Bracket you no longer have to be in 100 places at once, Alexa can do it for you. With our new skill a tournament organizer can set up rulesets, allow players to report scores directly to the bracket, and be notified of issues immediately. The goal is to remove the stress of being a tournament organizer and allow tournament organizers to have as much fun as the attendees.
