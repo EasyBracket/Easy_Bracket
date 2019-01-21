@@ -53,11 +53,19 @@
                             "name": "player",
                             "type": "AMAZON.Person",
                             "samples": [
+                                "{player} won the match",
                                 "{player}"
                             ]
                         }
                     ],
                     "samples": [
+                        "I lost",
+                        "match is over",
+                        "He won",
+                        "I won",
+                        "victor is {player}",
+                        "{player} won the round",
+                        "victory is for {player}",
                         "{player} slayed his enemy in battle",
                         "{player} won the battle",
                         "{player} showed his superiority in battle",
@@ -120,6 +128,21 @@
                     "name": "IncidentReport",
                     "slots": [],
                     "samples": [
+                        "give me help",
+                        "give us help",
+                        "send help",
+                        "send a referee over",
+                        "get a referee",
+                        "to send over a referee",
+                        "we need help",
+                        "there's been a problem",
+                        "report an error",
+                        "get an official",
+                        "get a tournament organizer",
+                        "call a tournament organizer over",
+                        "call an official over",
+                        "call an official",
+                        "call a tournament organizer",
                         "rules violation",
                         "report an incident",
                         "report a problem",
@@ -173,6 +196,15 @@
                     {
                         "type": "PlainText",
                         "value": "Who won the match?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.20325282246.1024141147271",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "what is the tournaments name?"
                     }
                 ]
             }
