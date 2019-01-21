@@ -14,9 +14,10 @@ async def login(tournament_name = "HackAZ"):
     global participants
     global matches
     global names
-
-    USER = "haydunce" 
-    KEY = "yCYu1uKVX10iNrRh5vJfy48ReZC2iQ0Kchi4xzMs"
+    
+    #insert info in production version
+    USER = "" 
+    KEY = ""
 
     user = await challonge.get_user(USER, KEY)
     tournament = await user.get_tournament(url = tournament_name, force_update=True)
