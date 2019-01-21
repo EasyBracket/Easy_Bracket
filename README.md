@@ -1,3 +1,5 @@
+<p align="center"><img src ="https://github.com/HaydnNitzsche/Easy_Bracket/blob/master/logos/EasyBracketSmall.png?raw=true" /></p>
+
 # Easy Bracket
 Run Challonge brackets with Alexa. Created by @HaydnNitzsche, @Jmarkaba, and @JoseTeuttli for HackArziona2019. Works in Python 3.6.
 
