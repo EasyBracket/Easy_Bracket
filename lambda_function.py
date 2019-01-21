@@ -1,6 +1,7 @@
 import json
 import challonge
 import asyncio
+import boto3
 
 tournament = None
 participants = []
@@ -9,18 +10,19 @@ names = []
 
 #Startup
 #--------------------------------------------------
-async def login(tournament_name = "HackAZ"):
+async def login():
     global tournament
     global participants
     global matches
     global names
-    
-    #insert info in production version
+
+    #enter information here in production
     USER = "" 
     KEY = ""
 
     user = await challonge.get_user(USER, KEY)
-    tournament = await user.get_tournament(url = tournament_name, force_update=True)
+    tournament_list = await user.get_tournaments(force_update=True)
+    tournament = tournament_list[len(tournament_list)-1]
     participants = await tournament.get_participants(force_update=True)
     matches = await tournament.get_matches(force_update=True)
     
@@ -83,10 +85,12 @@ async def intent_router(event, context):
             participant_id = await get_id_from_participant(winner)
             match = await get_next_match_from_participant_id(participant_id)
             await update_match(match.id, participant_id)
-            return statement("tWin Statement", "Okay, so " + winner + " is now a winner")
+            return statement("Win Statement", "Okay, " + winner + " is now a winner")
         else:
             return statement("Not in Tourney", "That person is not in the tournament")
-        
+    
+    if intent == "IncidentReport":
+        return send_alert()
 
 #Custom Intents Functions
 #--------------------------------------------------
@@ -187,9 +191,6 @@ def send_alert():
                 },
             },
             Source=SENDER,
-            # If you are not using a configuration set, comment or delete the
-            # following line
-            #ConfigurationSetName=CONFIGURATION_SET,
         )
     except ClientError as e:
         print(e.response['Error']['Message'])
